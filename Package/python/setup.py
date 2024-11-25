@@ -4,8 +4,8 @@ with open("./README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setup(
-    name="bellande_limit",
-    version="0.1.2",
+    name="bellande_node_importance",
+    version="0.1.0",
     description="Robots Limit",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -27,18 +27,18 @@ setup(
         "dev": ["pytest", "pytest-cov[all]", "mypy", "black"],
     },
     package_data={
-        'bellande_limit': ['Bellande_Limit'],
+        'bellande_node_importance': ['Bellande_Node_Importance'],
     },
     entry_points={
         'console_scripts': [
-            'bellande_limit_executable = bellande_limit.bellande_limit_executable:main',
-            'bellande_limit_api = bellande_limit.bellande_limit_api:main',
+            'bellande_node_importance_executable = bellande_node_importance.bellande_node_importance_executable:main',
+            'bellande_node_importance_api = bellande_node_importance.bellande_node_importance_api:main',
         ],
     },
     project_urls={
-        "Home": "https://github.com/Robotics-Sensors/bellande_limit",
-        "Homepage": "https://github.com/Robotics-Sensors/bellande_limit",
-        "documentation": "https://github.com/Robotics-Sensors/bellande_limit",
-        "repository": "https://github.com/Robotics-Sensors/bellande_limit",
+        "Home": "https://github.com/Robotics-Sensors/bellande_node_importance",
+        "Homepage": "https://github.com/Robotics-Sensors/bellande_node_importance",
+        "documentation": "https://github.com/Robotics-Sensors/bellande_node_importance",
+        "repository": "https://github.com/Robotics-Sensors/bellande_node_importance",
     },
 )

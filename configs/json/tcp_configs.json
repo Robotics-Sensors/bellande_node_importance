@@ -17,7 +17,7 @@
   ],
   "url": "tcp://bellande-robotics-sensors-research-innovation-center.org",
   "endpoint_path": {
-    "bellande_limit": "/tcp/Bellande_Limit/bellande_limit"
+    "bellande_node_importance": "/tcp/Bellande_Node_Importance/bellande_node_importance"
   },
   "Bellande_Framework_Access_Key": "bellande_tcp_api_opensource"
 }
