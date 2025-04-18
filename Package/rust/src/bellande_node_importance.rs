@@ -21,9 +21,15 @@ use std::process::{self, Command};
 use structopt::StructOpt;
 
 #[derive(StructOpt, Debug)]
-#[structopt(name = "bellande_node_importance", about = "Bellande Node Importance Tool")]
+#[structopt(
+    name = "bellande_node_importance",
+    about = "Bellande Node Importance Tool"
+)]
 struct Opt {
-    #[structopt(long, help = "Node to evaluate as JSON object with coordinates and segment")]
+    #[structopt(
+        long,
+        help = "Node to evaluate as JSON object with coordinates and segment"
+    )]
     node: String,
 
     #[structopt(long, help = "List of recent nodes as JSON array")]
@@ -38,14 +44,18 @@ struct Opt {
     #[structopt(long, help = "Grid steps for each dimension as JSON array")]
     grid_steps: String,
 
-    #[structopt(long, help = "Minimum required segment coverage ratio", default_value = "0.5")]
+    #[structopt(
+        long,
+        help = "Minimum required segment coverage ratio",
+        default_value = "0.5"
+    )]
     min_segment_coverage: f64,
 
     #[structopt(long, help = "Use local executable instead of API")]
     use_executable: bool,
 }
 
-async fn make_node_importance_request(
+pub async fn make_node_importance_request(
     node: Value,
     recent_nodes: Value,
     important_nodes: Value,
@@ -81,17 +91,15 @@ async fn make_node_importance_request(
     Ok(response)
 }
 
-fn get_executable_path() -> PathBuf {
+pub fn get_executable_path() -> PathBuf {
     if cfg!(target_os = "windows") {
-        Path::new(env!("CARGO_MANIFEST_DIR"))
-            .join("Bellande_Node_Importance.exe")
+        Path::new(env!("CARGO_MANIFEST_DIR")).join("Bellande_Node_Importance.exe")
     } else {
-        Path::new(env!("CARGO_MANIFEST_DIR"))
-            .join("Bellande_Node_Importance")
+        Path::new(env!("CARGO_MANIFEST_DIR")).join("Bellande_Node_Importance")
     }
 }
 
-fn run_node_importance_executable(
+pub fn run_node_importance_executable(
     node: &str,
     recent_nodes: &str,
     important_nodes: &str,
@@ -107,15 +115,14 @@ fn run_node_importance_executable(
     let grid_steps_list: Value = serde_json::from_str(grid_steps)?;
 
     // Validate dimensions
-    if let (Some(coords), Some(steps)) = (
-        node_obj["coords"].as_array(),
-        grid_steps_list.as_array()
-    ) {
+    if let (Some(coords), Some(steps)) = (node_obj["coords"].as_array(), grid_steps_list.as_array())
+    {
         if coords.len() != steps.len() {
             return Err(format!(
                 "Node coordinates must match grid steps dimensions ({})",
                 steps.len()
-            ).into());
+            )
+            .into());
         }
     }
 
@@ -139,58 +146,7 @@ fn run_node_importance_executable(
         Err(format!(
             "Process failed: {}",
             String::from_utf8_lossy(&output.stderr)
-        ).into())
+        )
+        .into())
     }
-}
-
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn Error>> {
-    let opt = Opt::from_args();
-
-    // Parse JSON strings to Values for validation
-    let node: Value = serde_json::from_str(&opt.node)
-        .map_err(|e| format!("Error parsing node: {}", e))?;
-    let recent_nodes: Value = serde_json::from_str(&opt.recent_nodes)
-        .map_err(|e| format!("Error parsing recent nodes: {}", e))?;
-    let important_nodes: Value = serde_json::from_str(&opt.important_nodes)
-        .map_err(|e| format!("Error parsing important nodes: {}", e))?;
-    let adjacent_segments: Value = serde_json::from_str(&opt.adjacent_segments)
-        .map_err(|e| format!("Error parsing adjacent segments: {}", e))?;
-    let grid_steps: Value = serde_json::from_str(&opt.grid_steps)
-        .map_err(|e| format!("Error parsing grid steps: {}", e))?;
-
-    if opt.use_executable {
-        // Run using local executable
-        if let Err(e) = run_node_importance_executable(
-            &opt.node,
-            &opt.recent_nodes,
-            &opt.important_nodes,
-            &opt.adjacent_segments,
-            &opt.grid_steps,
-            opt.min_segment_coverage,
-        ) {
-            eprintln!("Error: {}", e);
-            process::exit(1);
-        }
-    } else {
-        // Run using API
-        match make_node_importance_request(
-            node,
-            recent_nodes,
-            important_nodes,
-            adjacent_segments,
-            grid_steps,
-            opt.min_segment_coverage,
-        ).await {
-            Ok(result) => {
-                println!("{}", serde_json::to_string_pretty(&result)?);
-            }
-            Err(e) => {
-                eprintln!("Error: {}", e);
-                process::exit(1);
-            }
-        }
-    }
-
-    Ok(())
 }
