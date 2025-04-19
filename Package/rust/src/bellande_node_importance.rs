@@ -91,6 +91,43 @@ pub async fn make_node_importance_request(
     Ok(response)
 }
 
+pub async fn make_node_importance_request_local(
+    url: &str,
+    node: Value,
+    recent_nodes: Value,
+    important_nodes: Value,
+    adjacent_segments: Value,
+    grid_steps: Value,
+    min_segment_coverage: f64,
+) -> Result<Value, Box<dyn Error>> {
+    let client = reqwest::Client::new();
+    let url = url;
+
+    let payload = json!({
+        "node": node,
+        "nodes": recent_nodes,
+        "important_nodes": important_nodes,
+        "adjacent_segments": adjacent_segments,
+        "grid_steps": grid_steps,
+        "min_segment_coverage": min_segment_coverage,
+        "auth": {
+            "authorization_key": "bellande_web_api_opensource"
+        }
+    });
+
+    let response = client
+        .post(url)
+        .header("accept", "application/json")
+        .header("Content-Type", "application/json")
+        .json(&payload)
+        .send()
+        .await?
+        .json::<Value>()
+        .await?;
+
+    Ok(response)
+}
+
 pub fn get_executable_path() -> PathBuf {
     if cfg!(target_os = "windows") {
         Path::new(env!("CARGO_MANIFEST_DIR")).join("Bellande_Node_Importance.exe")
