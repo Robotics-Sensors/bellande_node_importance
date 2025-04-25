@@ -1,6 +1,6 @@
 [package]
 name = "bellande_node_importance"
-version = "0.1.2"
+version = "0.1.3"
 edition = "2021"
 authors = ["Bellande Robotics Sensors Research Innovation Center"]
 description = "A tool for calculating n-dimensional node importance via API or local executable"

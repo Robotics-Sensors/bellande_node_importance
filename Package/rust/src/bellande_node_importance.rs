@@ -55,7 +55,7 @@ struct Opt {
     use_executable: bool,
 }
 
-pub async fn make_node_importance_request(
+pub async fn make_bellande_node_importance_request(
     node: Value,
     recent_nodes: Value,
     important_nodes: Value,
@@ -91,7 +91,7 @@ pub async fn make_node_importance_request(
     Ok(response)
 }
 
-pub async fn make_node_importance_request_local(
+pub async fn make_bellande_node_importance_request_local(
     url: &str,
     node: Value,
     recent_nodes: Value,
@@ -136,7 +136,7 @@ pub fn get_executable_path() -> PathBuf {
     }
 }
 
-pub fn run_node_importance_executable(
+pub fn run_bellande_node_importance_executable(
     node: &str,
     recent_nodes: &str,
     important_nodes: &str,
